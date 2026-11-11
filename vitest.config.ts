@@ -9,5 +9,12 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.spec.ts'],
+    coverage: {
+      provider: 'v8',
+      thresholds: {
+        lines: 60,
+        branches: 60,
+      }
+    }
   },
 });

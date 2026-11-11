@@ -23,7 +23,7 @@ describe('TaskService', () => {
     expect(task.completed).toBe(false);
   })
   it('should get all created tasks', () => {
-    const task = service.create({ title: 'Test Task', description: 'Test Description' });
+    service.create({ title: 'Test Task', description: 'Test Description' });
     const tasks = service.findAll();
     expect(tasks.length).toBe(1);
   })

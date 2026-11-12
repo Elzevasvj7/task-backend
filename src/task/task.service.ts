@@ -40,7 +40,7 @@ export class TaskService {
     status: string;
     message: string;
   } {
-    const task = this.findOne(id);
+    this.findOne(id);
     this.tasks = this.tasks.filter((item) => item.id !== id);
     return {
       status: 'success',

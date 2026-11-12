@@ -46,7 +46,7 @@ jobs:
       - name: Build TypeScript application
         run: pnpm run build
 
-deploy:
+  deploy:
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
     needs: [validate]

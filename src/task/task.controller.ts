@@ -43,7 +43,10 @@ export class TaskController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Task {
+  remove(@Param('id', ParseIntPipe) id: number): {
+    status: string;
+    message: string;
+  } {
     return this.taskService.remove(id);
   }
 }

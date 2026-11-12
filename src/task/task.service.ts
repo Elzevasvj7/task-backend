@@ -36,9 +36,15 @@ export class TaskService {
     return task;
   }
 
-  remove(id: number): Task {
+  remove(id: number): {
+    status: string;
+    message: string;
+  } {
     const task = this.findOne(id);
     this.tasks = this.tasks.filter((item) => item.id !== id);
-    return task;
+    return {
+      status: 'success',
+      message: `Task with id ${id} has been removed`,
+    };
   }
 }

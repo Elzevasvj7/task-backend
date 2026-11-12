@@ -4,7 +4,7 @@ FROM node:24-bookworm-slim AS build
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
+RUN corepack enable
 
 
 COPY package.json pnpm-lock.yaml ./
@@ -21,11 +21,11 @@ FROM node:24-bookworm-slim AS production-deps
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
+RUN corepack enable
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --no-frozen-lockfile
 
 
 # Etapa 3: imagen final para ejecutar la aplicación

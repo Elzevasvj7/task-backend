@@ -4,7 +4,8 @@ FROM node:24-bookworm-slim AS build
 
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
+
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -20,7 +21,7 @@ FROM node:24-bookworm-slim AS production-deps
 
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
 
 COPY package.json pnpm-lock.yaml ./
 

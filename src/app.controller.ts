@@ -10,7 +10,11 @@ export class AppController {
     return this.appService.getHello();
   }
   @Get('/health')
-  health(): string {
+  health(): {
+    status: string;
+    uptime: number;
+    timestamp: string;
+  } {
     return this.appService.health();
   }
 }

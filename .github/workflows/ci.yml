@@ -112,3 +112,37 @@ jobs:
           service: ${{ vars.ECS_SERVICE }}
           cluster: ${{ vars.ECS_CLUSTER }}
           wait-for-service-stability: true
+      
+      - name: Smoke test the deployed service
+        run: |
+          echo "Iniciando Smoke Tests contra: http://${{ vars.ALB_DNS }}"
+          
+          MAX_RETRIES=5
+          DELAY=5
+          SUCCESS=false
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Intento $i de $MAX_RETRIES..."
+            
+            # 1. Hacemos la peticion guardando codigo HTTP y cuerpo
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://${{ vars.ALB_DNS }}/health)
+            
+            # Separamos el cuerpo y el codigo HTTP
+
+            # 2. Verificamos codigo 200 Y que el JSON contenga '"status":"ok"'
+            if [ "$RESPONSE" -eq 200 ]; then
+              echo "Intento $i exitoso! (HTTP $RESPONSE). Smoke test pasó."
+              SUCCESS=true
+              break
+            else
+              echo "Intento $i falló (HTTP $RESPONSE). Reintentando en ${DELAY}s..."
+              sleep $DELAY
+            fi
+          done
+
+          # 3. Si despues de todos los intentos no tuvo exito, rompemos el pipeline
+          if [ "$SUCCESS" = false ]; then
+            echo "Smoke test falló tras $MAX_RETRIES intentos. Despliegue no confiable."
+            exit 1
+          fi
+      

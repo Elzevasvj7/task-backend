@@ -17,3 +17,4 @@ async function bootstrap() {
   logger.log('--------------------------------------------------');
 }
 await bootstrap();
+

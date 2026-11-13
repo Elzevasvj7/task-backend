@@ -5,7 +5,15 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  health(): string {
-    return 'OK';
+  health(): {
+    status: string;
+    uptime: number;
+    timestamp: string;
+  } {
+    return {
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  };
   } 
 }

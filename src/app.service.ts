@@ -15,7 +15,7 @@ export class AppService {
     status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    message: 'Esto es green',
+    message: 'Esto es green X2',
   };
   } 
 }

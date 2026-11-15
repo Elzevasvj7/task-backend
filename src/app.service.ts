@@ -15,7 +15,7 @@ export class AppService {
     status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    message: 'Esto es green X2',
+    message: 'Esto es green X2 desplegado con éxito en el puerto 3000',
   };
   } 
 }

@@ -9,11 +9,13 @@ export class AppService {
     status: string;
     uptime: number;
     timestamp: string;
+    message: string;
   } {
     return {
     status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
+    message: 'Esto es green',
   };
   } 
 }

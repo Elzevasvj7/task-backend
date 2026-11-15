@@ -14,6 +14,7 @@ export class AppController {
     status: string;
     uptime: number;
     timestamp: string;
+    message: string;
   } {
     return this.appService.health();
   }

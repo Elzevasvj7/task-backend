@@ -15,9 +15,5 @@ async function bootstrap() {
   logger.log('🔥 ¡Todo listo para recibir peticiones!');
   logger.log('Desarrollado con ❤️ por Elzevasvj7');
   logger.log('--------------------------------------------------');
-  setTimeout(() => {
-    console.error('💥 Crash intencional: Probando Blue/Green Rollback');
-    process.exit(1);
-  }, 2000);
 }
 await bootstrap();

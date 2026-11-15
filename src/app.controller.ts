@@ -11,7 +11,7 @@ export class AppController {
   }
   @Get('/health')
   health(): {
-    status: string;
+    status: boolean;
     uptime: number;
     timestamp: string;
     message: string;

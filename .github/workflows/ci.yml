@@ -155,3 +155,12 @@ jobs:
             echo "❌ Smoke test falló tras $MAX_RETRIES intentos. Despliegue no confiable."
             exit 1
           fi
+      # 11. Envía una notificación enriquecida a Discord (Éxito o Fallo)
+      - name: Notify deployment status to Discord
+        if: always()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: "🚀 Despliegue: task-backend"
+          description: "Versión ${{ steps.tag_version.outputs.new_tag }} procesada con Blue/Green en AWS ECS."

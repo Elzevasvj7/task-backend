@@ -1,0 +1,66 @@
+name: GitOps Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - master # Cambia a 'main' si tu rama principal se llama así
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-push:
+    name: Build, Push and Update GitOps Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # Necesitamos el repo de manifiestos para modificarlo
+      - name: Checkout GitOps manifests repo
+        uses: actions/checkout@v4
+        with:
+          repository: Elzevasvj7/k8s-portfolio # Tu repo de manifiestos
+          token: ${{ secrets.MANIFESTS_REPO_TOKEN }}
+          path: gitops-manifests # Lo clonamos en una subcarpeta
+
+      # Configurar credenciales de AWS (Usando Secrets o Variables)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }} # O secrets.AWS_REGION si lo tienes así
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_K8S }}:${{ github.sha }}
+
+      # ACTUALIZACIÓN DEL REPO DE MANIFIESTOS
+      - name: Update image tag in GitOps manifests
+        run: |
+          cd gitops-manifests
+          # Usamos sed para buscar la línea de image: y reemplazarla con el nuevo SHA
+          # OJO: Asegúrate de que la indentación en el sed coincida con tu archivo
+          sed -i "s|image: .*|image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY_K8S }}:${{ github.sha }}|g" apps/task-backend/deployment.yaml
+          
+          # Configurar usuario de git para el commit automático
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          git add apps/task-backend/deployment.yaml
+          # El commit que seguirá la convención CI/CD
+          git commit -m "ci: update task-backend image to ${{ github.sha }}"
+          git push origin main # O master, dependiendo de la rama de tu repo de manifiestos
